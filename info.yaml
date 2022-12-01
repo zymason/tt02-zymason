@@ -11,13 +11,13 @@ documentation:
   discord:      "iamzach6#4996"
   title:        "Seven-segment display buffer"
   description:  "Storage and variable speed readback segment digits"
-  how_it_works: ""
-  how_to_test:  ""      # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
+  how_it_works: "It does"
+  how_to_test:  "Yes"      # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
   external_hw:  "None"
   language:     "SystemVerilog"
-  doc_link:     ""      # URL to longer form documentation, eg the README.md in your repository
+  doc_link:     "None"      # URL to longer form documentation, eg the README.md in your repository
   clock_hz:     6250
-  picture:      ""      # relative path to a picture in your repository
+  picture:      "None"      # relative path to a picture in your repository
   inputs:
     - clock
     - reset

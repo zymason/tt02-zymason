@@ -1,9 +1,0 @@
-{"vcs1":{"timestamp_begin":1669929148.947765445, "rt":0.29, "ut":0.13, "st":0.10}}
-{"vcselab":{"timestamp_begin":1669929149.302149516, "rt":0.29, "ut":0.19, "st":0.05}}
-{"link":{"timestamp_begin":1669929149.639838973, "rt":0.25, "ut":0.12, "st":0.12}}
-{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1669929148.670273256}
-{"VCS_COMP_START_TIME": 1669929148.670273256}
-{"VCS_COMP_END_TIME": 1669929149.976948206}
-{"VCS_USER_OPTIONS": "-sverilog zymason.sv"}
-{"vcs1": {"peak_mem": 336140}}
-{"stitch_vcselab": {"peak_mem": 222436}}

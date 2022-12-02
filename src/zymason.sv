@@ -18,7 +18,7 @@ module Zymason_Tiny1 (
   input  logic       RW, sel,
   input  logic [3:0] pin_in,
   output tri   [7:0] io_out);
-  localparam NUM_DIGITS = 10;   // The number of total digits that can be stored
+  localparam NUM_DIGITS = 8;   // The number of total digits that can be stored
 
   // logic pos_en, pulse;
   logic [6:0] dig_out[NUM_DIGITS-1:0];    // Unpacked digit output array

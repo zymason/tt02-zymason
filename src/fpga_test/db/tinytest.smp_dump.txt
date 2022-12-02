@@ -1,0 +1,7 @@
+
+State Machine - |ChipInterface|Zymason_Tiny1:dut|Zymason_FSM:f0|state
+Name state.WRT1 state.WRT0 state.SCAN state.INIT 
+state.INIT 0 0 0 0 
+state.SCAN 0 0 1 1 
+state.WRT0 0 1 0 1 
+state.WRT1 1 0 0 1 

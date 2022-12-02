@@ -18,18 +18,22 @@ module Zymason_Tiny1 (
   input  logic       RW, sel,
   input  logic [3:0] pin_in,
   output tri   [7:0] io_out);
-  localparam NUM_DIGITS = 2;    // The number of total digits that can be stored
+  localparam NUM_DIGITS = 10;   // The number of total digits that can be stored
 
-  logic pos_en, pulse;
+  // logic pos_en, pulse;
   logic [6:0] dig_out[NUM_DIGITS-1:0];    // Unpacked digit output array
   logic [NUM_DIGITS-1:0] dig_en;          // Enable line for each digit
+
+  assign D0 = dig_out[0];
+  assign D1 = dig_out[1];
+  assign {en1, en0} = {dig_en[1], dig_en[0]};
 
 
   // Shift register for selecting current display digit in both modes
   // Control FSM
   // Clocking module to generate slow pulses for display cycling in R-mode
   Zymason_ShiftReg #(NUM_DIGITS) s0 (.clock, .reset, .en(pos_en), .out(dig_en));
-  Zymason_FSM f0 (.clock, .reset, .RW, .sel, .pulse, .pos_en);
+  Zymason_FSM f0 (.clock, .reset, .RW, .sel, .pulse, .pos_en, .st_out);
   Zymason_PulseGen p0 (.clock, .reset, .spd({pin_in, sel}), .pulse);
 
   genvar i;
@@ -37,12 +41,9 @@ module Zymason_Tiny1 (
     for (i=0; i<NUM_DIGITS; i=i+1) begin: STR
       Zymason_DigStore ds (.clock, .reset, .en(dig_en[i]), .sel, .RW, .pin_in,
                           .dig_out(dig_out[i]));
-      assign io_out[6:0] = (dig_en[i]) ? dig_out[i] : 'bz;  // Display driver
+      Zymason_Drive dr (.en(dig_en[i]), .val(dig_out[i]), .out(io_out[6:0]));
     end
   endgenerate
-
-  // Output to segment
-  assign io_out[6:0] = dig_out[dig_en];
 
   // Mode indicator
   assign io_out[7] = RW;
@@ -51,17 +52,35 @@ endmodule : Zymason_Tiny1
 
 
 
+
+module Zymason_Drive (
+  input  logic       en,
+  input  logic [6:0] val,
+  output tri   [6:0] out);
+
+  assign out = en ? val : 7'bz;
+
+endmodule : Zymason_Drive
+
+
+
 // Control state machine for Zymason_Tiny1
 module Zymason_FSM (
   input  logic clock, reset,
   input  logic RW, sel, pulse,
-  output logic pos_en);
+  output logic pos_en,
+  output logic [1:0] st_out);
 
-  enum logic [1:0] {INIT, SCAN, WRT0, WRT1} state, nextState;
+  assign st_out = state;
+
+  enum logic [1:0] {INIT = 2'b00, SCAN = 2'b01, WRT0 = 2'b10, WRT1 = 2'b11} state, nextState;
 
   // Explicit-style FSM
-  always_ff @(posedge clock) begin
-    state <= (reset) ? INIT : nextState;
+  always_ff @(posedge clock, posedge reset) begin
+    if (reset)
+      state <= INIT;
+    else
+      state <= nextState;
   end
 
   // Next-state logic
@@ -98,13 +117,15 @@ module Zymason_DigStore (
   output logic [6:0] dig_out);
 
   // 2 implicit registers with a synchronous reset
-  always_ff @(posedge clock) begin
+  always_ff @(posedge clock, posedge reset) begin
     if (reset)
-      dig_out <= 8'd0;
-    else if (en & ~sel & RW)
-      dig_out[3:0] <= pin_in;
-    else if (en & sel & RW)
-      dig_out[6:4] <= pin_in[2:0];
+      dig_out <= 7'd0;
+    else begin
+      if (en & ~sel & RW)
+        dig_out[3:0] <= pin_in;
+      else if (en & sel & RW)
+        dig_out[6:4] <= pin_in[2:0];
+    end
   end
 
 endmodule : Zymason_DigStore
@@ -118,13 +139,19 @@ module Zymason_ShiftReg
   input  logic en,
   output logic [DW-1:0] out);
 
-  always_ff @(posedge clock) begin
+  logic [DW:0] long_out;
+  logic tmp;
+
+  assign out = long_out[DW-1:0];
+  assign tmp = long_out[DW-1];
+
+  always_ff @(posedge clock, posedge reset) begin
     if (reset) begin
-      out <= {DW, {1'b0}};
-      out[0] <= 1'b1;
+      long_out <= 1;
     end
-    else if (en)
-      out <= {out[DW-2:0], out[DW-1]};
+    else if (en) begin
+      long_out <= {long_out, tmp};
+    end
   end
 
 endmodule : Zymason_ShiftReg
@@ -155,12 +182,12 @@ module Zymason_PulseGen (
   always_ff @(posedge clock) begin
     if (reset | pulse)
       lowCount <= 5'd0;
-    else if (en_low)
+    else if (en_low & spd[0])
       lowCount <= lowCount + 5'd1;
   end
 
   // pulse is asserted for a single cycle since its counter immediately resets
-  assign pulse = (lowCount == spd) ? 1'b1 : 1'b0;
+  assign pulse = ((lowCount[4:1] == spd[4:1]) & spd[0]) ? en_low : 1'b0;
   assign en_low = (count == 9'd0) ? 1'b1 : 1'b0;
 
 endmodule : Zymason_PulseGen

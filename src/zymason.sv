@@ -24,9 +24,9 @@ module Zymason_Tiny1 (
   logic [6:0] dig_out[NUM_DIGITS-1:0];    // Unpacked digit output array
   logic [NUM_DIGITS-1:0] dig_en;          // Enable line for each digit
 
-  assign D0 = dig_out[0];
-  assign D1 = dig_out[1];
-  assign {en1, en0} = {dig_en[1], dig_en[0]};
+  // assign D0 = dig_out[0];
+  // assign D1 = dig_out[1];
+  // assign {en1, en0} = {dig_en[1], dig_en[0]};
 
 
   // Shift register for selecting current display digit in both modes
@@ -68,12 +68,11 @@ endmodule : Zymason_Drive
 module Zymason_FSM (
   input  logic clock, reset,
   input  logic RW, sel, pulse,
-  output logic pos_en,
-  output logic [1:0] st_out);
+  output logic pos_en);
 
-  assign st_out = state;
+  // assign st_out = state;
 
-  enum logic [1:0] {INIT = 2'b00, SCAN = 2'b01, WRT0 = 2'b10, WRT1 = 2'b11} state, nextState;
+  enum logic [1:0] {INIT, SCAN, WRT0, WRT1} state, nextState;
 
   // Explicit-style FSM
   always_ff @(posedge clock, posedge reset) begin

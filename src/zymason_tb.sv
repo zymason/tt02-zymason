@@ -13,9 +13,7 @@ module ChipInterface (
 
   // Use the second-level module for simpler connections
   Zymason_Tiny1 dut (.clock, .reset, .RW(SW[2]), .sel(SW[3]), .pin_in(SW[7:4]),
-                    .io_out, .D0(HEX2), .D1(HEX3), .pos_en(LEDR[17]),
-                    .pulse(LEDR[16]), .en1(LEDR[15]), .en0(LEDR[14]),
-                    .st_out(LEDG[1:0]));
+                    .io_out);
 
   // Input connections
   assign reset = SW[1];

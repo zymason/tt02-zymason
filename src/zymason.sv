@@ -20,14 +20,9 @@ module Zymason_Tiny1 (
   output tri   [7:0] io_out);
   localparam NUM_DIGITS = 8;   // The number of total digits that can be stored
 
-  // logic pos_en, pulse;
   logic [6:0] dig_out[NUM_DIGITS-1:0];    // Unpacked digit output array
   logic [NUM_DIGITS-1:0] dig_en;          // Enable line for each digit
   logic pos_en, pulse;
-
-  // assign D0 = dig_out[0];
-  // assign D1 = dig_out[1];
-  // assign {en1, en0} = {dig_en[1], dig_en[0]};
 
 
   // Shift register for selecting current display digit in both modes

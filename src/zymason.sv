@@ -23,7 +23,7 @@ module Zymason_Tiny1 (
   // logic pos_en, pulse;
   logic [6:0] dig_out[NUM_DIGITS-1:0];    // Unpacked digit output array
   logic [NUM_DIGITS-1:0] dig_en;          // Enable line for each digit
-  logic pos_en;
+  logic pos_en, pulse;
 
   // assign D0 = dig_out[0];
   // assign D1 = dig_out[1];
@@ -34,7 +34,7 @@ module Zymason_Tiny1 (
   // Control FSM
   // Clocking module to generate slow pulses for display cycling in R-mode
   Zymason_ShiftReg #(NUM_DIGITS) s0 (.clock, .reset, .en(pos_en), .out(dig_en));
-  Zymason_FSM f0 (.clock, .reset, .RW, .sel, .pulse, .pos_en, .st_out);
+  Zymason_FSM f0 (.clock, .reset, .RW, .sel, .pulse, .pos_en);
   Zymason_PulseGen p0 (.clock, .reset, .spd({pin_in, sel}), .pulse);
 
   genvar i;

@@ -9,10 +9,10 @@ project:
 documentation: 
   author:       "Zach Mason"
   discord:      "iamzach6#4996"
-  title:        "Seven-segment display buffer"
+  title:        "Multiple seven-segment digit buffer"
   description:  "Storage and variable speed readback segment digits"
   how_it_works: >
-    Stores 8x seven-segment display digits in registers in write mode. In read
+    Stores 16 seven-segment display digits in registers in write mode. In read
     mode, the values are sequentially displayed back, with a variable cycle
     rate. The segment inputs are 4-3 multiplexed and a clock divider is used to
     slow down the output rate. The user is responsible for tracking how many
